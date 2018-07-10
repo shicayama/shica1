@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+ <link rel="stylesheet" href="{% static 'css/sample.css' %}" type="text/css">
+ <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+ <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Teko">
+ <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+ <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.3.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+ <script src="{% static 'js/sample.js' %}" type="text/javascript"></script>
+ <script src="{% static 'js/chart.js' %}" type="text/javascript"></script>
+ <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+ <style>
+   h1 {
+     font-family: "Teko";font-size: 100px;
+   }
+   h2 {
+     font-family: "Quicksand";font-size: 80px;
+   }
+ </style>
+ <title>TimeMaker</title>
+</head>
+<body>
+<div id="side"><img src="{% static "image/TimeMaker.jpg" %}" width="150" height="110"></div>
+<div class="flickity-syncer">
+	<div id="date"><h1>{{ today }}</h1><canvas id="chart" width="1500" height="750"></canvas><h2>You Make {{ youmaketoday }} Mins</h2></div>
+	<div id="date"><h1>この1週間</h1><canvas id="canvas" width="1000" height="500"></canvas><h2>You Make {{ youmakeweek }} Mins</h2></div>
+</div>
+<script>
+var flickitySyncer = [];
+var elms = document.getElementsByClassName( "flickity-syncer" ) ;
+for( var i=0,l=elms.length; l>i; i++ )
+{
+	flickitySyncer[i] = new Flickity( elms[i] , {contain: true} ) ;
+}
+</script>
+  <script>
+   var ctx = document.getElementById('chart').getContext('2d');
+   var myChart = new Chart(ctx, {
+     type: 'doughnut',
+     data: {
+        labels: ['インターネット(分)', 'オフライン(分)'],
+        datasets: [{
+           label: '活動時間',
+           data: [{{ today_internet }}, 1440-{{ today_internet }}],
+           backgroundColor: [
+             "#f1c40f",
+             "#34495e"
+           ]
+         }]
+       }
+     });
+  </script>
+<script>
+window.onload = function() {
+    ctx = document.getElementById("canvas").getContext("2d");
+    window.myBar = new Chart(ctx, {
+        type: 'bar',
+        data: barChartData,
+        options: complexChartOption
+    });
+};
+</script>
+<script>
+var barChartData = {
+    labels: ['{{ 6day }}', '{{ 5day }}', '{{ 4day }}', '{{ 3day }}', '{{ 2day }}', '{{ 1day }}', '{{ today }}'],
+    datasets: [
+    {
+        type: 'bar',
+        label: 'インターネット(分)',
+        data: ['{{ 6day_internet }}','{{ 5day_internet }}','{{ 4day_internet }}','{{ 3day_internet }}','{{ 2day_internet }}','{{ 1day_internet }}','{{ today_internet }}'],
+        borderColor : "rgba(54,164,235,0.8)",
+        backgroundColor : "rgba(54,164,235,0.5)",
+        yAxisID: "y-axis-2",
+    },
+    ],
+};
+</script>
+<script>
+var complexChartOption = {
+    responsive: true,
+    scales: {
+        yAxes: [{
+            id: "y-axis-2",
+            type: "linear", 
+            position: "right",
+            ticks: {
+                min: 0,
+            },
+            gridLines: {
+                drawOnChartArea: false, 
+            },
+        }],
+    }
+};
+</script>
+<div id="sample01">
+   <dl id="acMenu">
+      <dt>{{ today }}利用内訳</dt>
+         <dd id="zzz">
+            <canvas id="horizontal" width="500" height="300"></canvas>
+            <script>
+              var ctx = document.getElementById('horizontal').getContext('2d');
+              var myChart = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: {
+                   labels: ['{{ actname1.site }}', '{{ actname2.site }}', '{{ actname3.site }}', '{{ actname4.site }}', '{{ actname5.site }}'],
+                   datasets: [{
+                      label: '閲覧時間(分)',
+                      data: [{{ actname1.total }}, {{ actname2.total }}, {{ actname3.total }}, {{ actname4.total }}, {{ actname5.total }}],
+                      backgroundColor: "rgba(153, 102, 255, 0.2)"
+                  }],
+                },
+		options: {
+		  scales: {
+		    xAxes: [{
+		      ticks: {
+			min: 0
+		       },
+		     }],
+		   },
+                  onClick: function(e) {
+                    var activePoints = myChart.getElementAtEvent(e)[0]._index;
+                    var data = ['{{ actname1.site }}', '{{ actname2.site }}', '{{ actname3.site }}', '{{ actname4.site }}', '{{ actname5.site }}'];
+                    var message = data[activePoints]+"を停止しますか？";
+                 	//「OK」ボタンをクリックした時
+                 	if( confirm(message) ) {
+	        	alert( data[activePoints]+"を停止しました") ;
+	                }
+                  },
+                },
+              });
+            </script>
+         </dd>
+   </dl>
+ </div>
+</body>
+</html>

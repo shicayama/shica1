@@ -1,0 +1,23 @@
+#date {
+  text-align:center;
+}
+
+#acMenu dt{
+  position:relative;
+  display:block;
+  width:200px;
+  height:50px;
+  line-height:50px;
+  text-align:center;
+  border:#5bc0de 1px solid;
+  cursor:pointer;
+ }
+
+#acMenu dd{
+  width:800px;
+  height:500px;
+  line-height:50px;
+  text-align:center;
+  display:none;
+}
+
