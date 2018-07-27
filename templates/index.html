@@ -12,6 +12,14 @@
  <script src="{% static 'js/sample.js' %}" type="text/javascript"></script>
  <script src="{% static 'js/chart.js' %}" type="text/javascript"></script>
  <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+ <script>
+ var flickitySyncer = [];
+ var elms = document.getElementsByClassName( "flickity-syncer" ) ;
+ for( var i=0,l=elms.length; l>i; i++ )
+ {
+        flickitySyncer[i] = new Flickity( elms[i] , {contain: true} ) ;
+ }
+ </script>
  <style>
    h1 {
      font-family: "Teko";font-size: 100px;
@@ -23,20 +31,12 @@
  <title>TimeMaker</title>
 </head>
 <body>
-<div id="side"><img src="{% static "image/TimeMaker.jpg" %}" width="150" height="110"></div>
-<div class="flickity-syncer">
-	<div id="date"><h1>{{ today }}</h1><canvas id="chart" width="1500" height="750"></canvas><h2>You Make {{ youmaketoday }} Mins</h2></div>
-	<div id="date"><h1>この1週間</h1><canvas id="canvas" width="1000" height="500"></canvas><h2>You Make {{ youmakeweek }} Mins</h2></div>
-</div>
-<script>
-var flickitySyncer = [];
-var elms = document.getElementsByClassName( "flickity-syncer" ) ;
-for( var i=0,l=elms.length; l>i; i++ )
-{
-	flickitySyncer[i] = new Flickity( elms[i] , {contain: true} ) ;
-}
-</script>
-  <script>
+ <div id="side"><img src="{% static "image/TimeMaker.jpg" %}" width="150" height="110"></div>
+  <div class="flickity-syncer">
+   <div id="date"><h1>{{ today }}</h1><canvas id="chart" width="1500" height="750"></canvas><h2>You Make {{ youmaketoday }} Mins</h2></div>
+   <div id="date"><h1>過去1週間</h1><canvas id="canvas" width="1000" height="500"></canvas><h2>You Make {{ youmakeweek }} Mins</h2></div>
+  </div>
+ <script>
    var ctx = document.getElementById('chart').getContext('2d');
    var myChart = new Chart(ctx, {
      type: 'doughnut',
@@ -52,36 +52,36 @@ for( var i=0,l=elms.length; l>i; i++ )
          }]
        }
      });
-  </script>
-<script>
-window.onload = function() {
+ </script>
+ <script>
+   window.onload = function() {
     ctx = document.getElementById("canvas").getContext("2d");
     window.myBar = new Chart(ctx, {
         type: 'bar',
         data: barChartData,
         options: complexChartOption
     });
-};
-</script>
-<script>
-var barChartData = {
-    labels: ['{{ 6day }}', '{{ 5day }}', '{{ 4day }}', '{{ 3day }}', '{{ 2day }}', '{{ 1day }}', '{{ today }}'],
-    datasets: [
-    {
-        type: 'bar',
-        label: 'インターネット(分)',
-        data: ['{{ 6day_internet }}','{{ 5day_internet }}','{{ 4day_internet }}','{{ 3day_internet }}','{{ 2day_internet }}','{{ 1day_internet }}','{{ today_internet }}'],
-        borderColor : "rgba(54,164,235,0.8)",
-        backgroundColor : "rgba(54,164,235,0.5)",
-        yAxisID: "y-axis-2",
-    },
+   };
+ </script>
+ <script>
+   var barChartData = {
+     labels: ['{{ 6day }}', '{{ 5day }}', '{{ 4day }}', '{{ 3day }}', '{{ 2day }}', '{{ 1day }}', '{{ today }}'],
+     datasets: [
+     {
+         type: 'bar',
+         label: 'インターネット(分)',
+         data: ['{{ 6day_internet }}','{{ 5day_internet }}','{{ 4day_internet }}','{{ 3day_internet }}','{{ 2day_internet }}','{{ 1day_internet }}','{{ today_internet }}'],
+         borderColor : "rgba(54,164,235,0.8)",
+         backgroundColor : "rgba(54,164,235,0.5)",
+         yAxisID: "y-axis-2",
+     },
     ],
-};
-</script>
-<script>
-var complexChartOption = {
-    responsive: true,
-    scales: {
+   };
+ </script>
+ <script>
+   var complexChartOption = {
+     responsive: true,
+     scales: {
         yAxes: [{
             id: "y-axis-2",
             type: "linear", 
@@ -93,9 +93,9 @@ var complexChartOption = {
                 drawOnChartArea: false, 
             },
         }],
-    }
-};
-</script>
+      }
+   };
+ </script>
 <div id="sample01">
    <dl id="acMenu">
       <dt>{{ today }}利用内訳</dt>
